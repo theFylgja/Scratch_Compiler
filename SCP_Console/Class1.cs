@@ -6,6 +6,8 @@ using BiomeLibrary;
 using System.Linq;
 using System.Configuration;
 using Newtonsoft.Json;
+using System.Diagnostics;
+using System.IO.Compression;
 
 namespace SCP_Console
 {
@@ -110,7 +112,7 @@ namespace SCP_Console
                             Next.Adv("compiling project solution");
                             try
                             {
-                                CompileProject();
+                                CompileProject_Test();
                             }
                             catch(Exception ex)
                             {
@@ -171,7 +173,7 @@ namespace SCP_Console
 
         }
 
-        public void CompileProject()
+        public void CompileProject_Test()
         {
             Next.Title("starting compile");
             //create output folder
@@ -186,10 +188,19 @@ namespace SCP_Console
             Next.Adv(".");
 
             //create Stage object
-            Target Stage = new Target("Stage", (BlockContainer)new object());
+            Target Stage = new Target("Stage", new BlockContainer());
+            Stage.blocks = new object();
             Stage.isStage = true;
             Stage.currentCostume = 0;
-            Costume cost = new Costume("black", 0, "svg", "random", 0, 0);
+            Costume cost = new Costume("random.svg", @"C:\Main\Cs\SCP\Tests\Project\Assets");
+            Next.Adv(cost.dataFormat);
+
+            //creating the new costume file
+            Next.Adv("doing the new costume stuff");
+            string fileContent = File.ReadAllText(@"C:\Main\Cs\SCP\Tests\Project\Assets\random.svg");
+            File.Create(rootPath + @"\Export\Project\" + cost.md5ext).Close();
+            File.WriteAllText(rootPath + @"\Export\Project\" + cost.md5ext, fileContent);
+            Next.Adv("done with that");
             Stage.costumes = new Costume[] { cost };
             Stage.sounds = new Sound[0];
             Stage.volume = 100;
@@ -200,13 +211,68 @@ namespace SCP_Console
             Stage.textToSpeechLanguage = null;
             Next.Adv(".");
 
+            //putting targets into Target array
             file.targets = new Target[] { Stage };
             Next.Adv(".");
 
-            string json = "my bals itch";//JsonConvert.SerializeObject(file);
+            
+            string json = JsonConvert.SerializeObject(file);
             Next.Adv(".");
             File.WriteAllText(rootPath + @"\Export\Project\project.json", json);
+            //Next.Adv("creating sb3 file");
+            if(File.Exists(rootPath + @"\Export\Project.sb3")) { File.Delete(rootPath + @"\Export\Project.sb3"); }
+            ZipFile.CreateFromDirectory(rootPath + @"\Export\Project", rootPath + @"\Export\Project.sb3");
+
             Next.Adv("all done. project compiled. now pray for it to work");
+            Next.Adv("opening dir in file explorer");
+            Process.Start(rootPath + @"\Export\Project");
+        }
+
+        public void CompileProject(string projectRoot)
+        {
+            //path variables
+            string jsonPath = projectRoot + @"\Export\Project\Project.json";
+            string exportPath = rootPath + @"\Export\Project";
+
+            //Json object
+            JsonFile fileContents = new JsonFile();
+
+            PrepareCompile(projectRoot);
+            Dictionary<string, string> projectFiles = GetProjectFiles(projectRoot);
+
+        }
+
+        //compiler methods
+        public void PrepareCompile(string rootPath)
+        {
+            //create output folder and json file
+            Directory.Delete(rootPath + @"\Export");
+            Directory.CreateDirectory(rootPath + @"\Export\Project");
+            File.Create(rootPath + @"\Export\Project\Project.json");
+            Next.Adv(".");
+        }
+        public Dictionary<string, string> GetProjectFiles(string projectRoot)
+        {
+            Dictionary<string, string> files = new Dictionary<string, string>();
+
+            if(File.Exists(projectRoot + @"\project.scpf"))
+            { files.Add("projectFile", projectRoot + @"\project.scpf"); }
+
+            if(File.Exists(projectRoot + @"\ref.bgdf"))
+            { files.Add("linkFile", projectRoot + @"\ref.bgdf"); }
+
+            return files;
+        }
+
+        //Project methods
+        public string GetPhysicalPath(string resPath, string root)
+        {
+            if(resPath.Substring(0, 6) != @"res:\\")
+            {
+                return null;
+            }
+            resPath = resPath.Substring(0, 5);
+            return root + @"\" + resPath;
         }
 
         //Settings methods
@@ -235,6 +301,13 @@ namespace SCP_Console
                 output[i - 1] = input[i];
             }
             return output;
+        }
+        Random random = new Random();
+        public string RandomString(int length)
+        {
+            const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
     public class Next
