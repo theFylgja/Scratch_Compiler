@@ -6,13 +6,14 @@ namespace SCP
         public bool isStage { get; set; }
         public string name { get; set; }
         public object variables { get; set; }
+        public object lists { get; set; }
         public object broadcasts { get; set; }
-        public BlockContainer blocks { get; set; }
+        public object blocks { get; set; }
         public object comments { get; set; }
         public int currentCostume { get; set; }
         public Costume[] costumes { get; set; }
         public Sound[] sounds { get; set; }
-        public float volume { get; set; }
+        public int volume { get; set; }
         public int layerOrder { get; set; }
         public bool visible { get; set; }
         public double x { get; set; }
@@ -52,10 +53,51 @@ namespace SCP
             this.isStage = false;
             this.name = name;
             this.variables = new object();
+            this.lists = new object();
             this.broadcasts = new object();
             this.blocks = blocks;
             this.comments = new object();
             this.currentCostume = 0;
         }
+    }
+
+    public class Stage
+    {
+        public bool isStage { get; set; }
+        public string name { get; set; }
+        public object variables { get; set; }
+        public object broadcasts { get; set; }
+        public object blocks { get; set; }
+        public object comments { get; set; }
+        public int currentCostume { get; set; }
+        public Costume[] costumes { get; set; }
+        public Sound[] sounds { get; set; }
+        public float volume { get; set; }
+        public int layerOrder { get; set; }
+        public int tempo { get; set; }
+        public int videoTransparency { get; set; }
+        public string videoState { get; set; }
+        public object textToSpeechLanguage { get; set; }
+    }
+    public class Sprite
+    {
+        public bool isStage { get; set; }
+        public string name { get; set; }
+        public object variables { get; set; }
+        public object broadcasts { get; set; }
+        public BlockContainer blocks { get; set; }
+        public object comments { get; set; }
+        public int currentCostume { get; set; }
+        public Costume[] costumes { get; set; }
+        public Sound[] sounds { get; set; }
+        public float volume { get; set; }
+        public int layerOrder { get; set; }
+        public bool visible { get; set; }
+        public double x { get; set; }
+        public double y { get; set; }
+        public double size { get; set; }
+        public double direction { get; set; }
+        public bool draggable { get; set; }
+        public string rotationStyle { get; set; }
     }
 }
