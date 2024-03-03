@@ -1,0 +1,7 @@
+#dec 
+var _var = 2;
+list l = new;
+std::colour = #0000FF;
+
+#dmc::Flag
+mtn::moveSteps(10);

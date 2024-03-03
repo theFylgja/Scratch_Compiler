@@ -1,0 +1,2 @@
+sektoren unterteilen
+vriablen init (variable + monitor)

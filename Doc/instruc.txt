@@ -1,0 +1,148 @@
+block object:
+the name is a random 20-letter string
+opcode: the actual command
+next: next command in stack
+parent: previous command
+inputs: stuff it needs(operators or other), also substack for if-statements
+fields: other stuff it needs(variables), for example in setvar
+shadow: idk, turn it off(bool) IMPORTANT: turn on for variables
+topLevel: i think its for editor, turn it off(bool)
+
+starting points also have x and y coordinates for the editor
+
+
+OPCODES:
+
+Motion:
+
+motion_movesteps( inputs:{ STEPS:[1, [4, value] ] })
+motion_turnright( inputs:{ DEGREES:[1, [4, value] ] } )
+motion_turnleft(  inputs:{ DEGREES:[1, [4, value] ] } )
+motion_goto( inputs:{ TO[1, goto_menu] } )
+motion_goto_menu( fields:{ "TO":["_random_",  null] } )//for mouse, use "_mouse_"
+motion_gotoxy( inputs:{ "X":[1, [4, value] ], "Y":[1, [4, value]]})
+motion_glideto( inputs:{ "SECS":[1, [4, value] ], "TO":[1, [4, motion_glideto_menu]]})
+motion_glideto_menu( fields:{ "TO":["_random_",  null] } )//for mouse, use "_mouse_"
+motion_glidetoxy( inputs:{ "SECS":[1, [4, value]], "X":[1, [4, value] ], "Y":[1, [4, value]]})
+motion_pointindirection( inputs:{"DIRECTION": [ 1,[8, value ] ] } )
+motion_pointtowards(inputs: {"TOWARDS": [1, motion_pointtowards_menu ]})
+motion_pointtowards_menu(fields: {"TOWARDS": ["_mouse_", null]}) //RANDOM DOES NOT EXIST
+motion_changexby(inputs: {"DX": [1, [ 4, value]]})
+motion_setx(inputs: {"X": [1,[4,value]]}) 
+motion_changeyby(inputs: {"DY": [1, [ 4, value]]})
+motion_sety(inputs: {"Y": [1,[4,value]]}) 
+motion_ifonedgebounce (none)
+motion_xposition ()
+motion_yposition ()
+motion_direction ()
+motion_setrotationstyle("fields": {"STYLE": ["left-right",null]})//"don't rotate" and "all around" are the other ones
+
+
+Looks:
+//EFFECTS are : COLOR, FISHEYE, WHIRL, PIXELATE, MOSAIC, BRIGHTNESS, GHOST 
+
+looks_sayforsecs("inputs": {"MESSAGE": [1,[10,value ]],"SECS": [1, [ 4,"2"]]})
+looks_say("inputs":{"MESSAGE":[1,[10,value]]})
+looks_thinkforsecs("inputs":{"MESSAGE":[1,[10,value]],"SECS":[1,[4,"2"]]})
+looks_think("inputs":{"MESSAGE":[1,[10,value]]})
+looks_switchcostumeto("inputs":{"COSTUME":[1,looks_costume]})//looks_costume variable?
+looks_costume("fields":{"COSTUME":[value,null]})
+looks_nextcostume(none)
+looks_switchbackdropto("inputs":{"BACKDROP":[1,looks_backdrop]})
+looks_backdrops("fields":{"BACKDROP":[value ,null]})
+looks_nextbackdrop(none)
+looks_changesizeby("inputs":{"CHANGE":[1,[4,"10"]]})
+looks_setsizeto("inputs":{"SIZE":[1,[4,"100"]]})
+looks_changeeffectby("inputs":{"CHANGE":[1,[4,value]]},"fields":{"EFFECT":[effect ,null]})
+looks_seteffectto("inputs":{"VALUE":[1,[4,"0"]]},"fields":{"EFFECT":["COLOR",null]})
+looks_cleargraphiceffects()
+looks_show()
+looks_hide()
+looks_gotofrontback("fields":{"FRONT_BACK":["front",null]})
+looks_goforwardbackwardlayers("inputs":{"NUM":[1,[7, value]]},"fields":{"FORWARD_BACKWARD":["forward",null]})
+looks_costumenumbername ("fields":{"NUMBER_NAME":["number",null]})
+looks_backdropnumbername ("fields":{"NUMBER_NAME":["number",null]})
+looks_size ()
+sound_volume ()
+
+
+sound
+//effects are:  PITCH, PAN
+
+sound_playuntildone ("inputs":{"SOUND_MENU":[1, sound_sounds_menu]})
+sound_sounds_menu ("fields":{"SOUND_MENU":[soundName, null]})
+sound_play ("inputs":{"SOUND_MENU":[1,sound_sounds_menu]})
+sound_stopallsounds ()
+sound_changeeffectby ("inputs":{"VALUE":[1,[4, value]]},"fields":{"EFFECT":[EFFECT,null]})
+sound_seteffectto ("inputs":{"VALUE":[1,[4, value]]},"fields":{"EFFECT":[EFFECT,null]})
+sound_cleareffects ()
+sound_changevolumeby ("inputs":{"VOLUME":[1,[4,value]]})
+sound_setvolumeto ("inputs":{"VOLUME":[1,[4,value ]]})
+
+
+sensing
+//KEYS: space, "up arrow", "down arrow", "right arrow", "left arrow", "any", all others lowercase
+
+sensing_touchingobject ("inputs":{"TOUCHINGOBJECTMENU":[1,sensing_touchingobjectmenu]})
+sensing_touchingobjectmenu ("fields":{"TOUCHINGOBJECTMENU":["_mouse_",null]})
+sensing_touchingcolor ("inputs":{"COLOR":[1,[9,color]]}) //color needs to be in hexadecimal
+sensing_coloristouchingcolor ("inputs":{"COLOR":[1,[9, color]],"COLOR2":[1,[9,color]]})
+sensing_keypressed ("inputs":{"KEY_OPTION":[1,sensing_keyoptions]})
+sensing_keyoptions ("fields":{"KEY_OPTION":["space",null]})
+sensing_askandwait ("inputs":{"QUESTION":[1,[10,value]]})
+sensing_answer ()
+sensing_mousex ()
+sensing_mousey ()
+sensing_setdragmode ("fields":{"DRAG_MODE":["draggable",null]})//not draggable would be the other option
+sensing_loudness ()
+sensing_timer ()
+sensing_resettimer ()
+sensing_of ("inputs":{"OBJECT":[1,sensing_of_object_menu]},"fields":{"PROPERTY":["backdrop #",null]})
+sensing_of_object_menu ("fields":{"OBJECT":["_stage_",null]}) //simply sprite name for sprites
+sensing_current ("fields":{"CURRENTMENU":["DAYOFWEEK",null]})//look it up yourself mf
+sensing_dayssince2000 ()
+sensing_username()
+
+
+Control
+
+control_wait ("inputs":{"DURATION":[1,[5,"1"]]})
+control_repeat ("inputs":{"TIMES":[1,[6,"10"]],"SUBSTACK":[2,commands]})
+control_if ("inputs":{"SUBSTACK":[2,commands],"CONDITION":[2,condition]})
+control_if_else ("inputs":{"SUBSTACK":[2,command],"SUBSTACK2":[2,command],"CONDITION":[2, commands]})
+control_wait_until ("inputs":{"CONDITION":[2, condition]})
+control_repeat_until ("inputs":{"SUBSTACK":[2,command],"CONDITION":[2, condition]})
+control_start_as_clone ()
+control_create_clone_of ("inputs":{"CLONE_OPTION":[1, control_create_clone_of_menu]})
+control_create_clone_of_menu ("fields":{"CLONE_OPTION":["_myself_",null]})
+control_delete_this_clone ()
+control_forever ("inputs":{"SUBSTACK":[2,command]})
+control_stop ("fields":{"STOP_OPTION":["all",null]})//figurte it out(skill issue)
+-> needs mutation "mutation":{"tagName":"mutation","children":[],"hasnext":"false"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
