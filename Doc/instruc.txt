@@ -6,7 +6,7 @@ parent: previous command
 inputs: stuff it needs(operators or other), also substack for if-statements
 fields: other stuff it needs(variables), for example in setvar
 shadow: idk, turn it off(bool) IMPORTANT: turn on for variables
-topLevel: i think its for editor, turn it off(bool)
+topLevel: set true if the block is the start of an array of blocks, otherwise false
 
 starting points also have x and y coordinates for the editor
 
@@ -81,7 +81,7 @@ sound_setvolumeto ("inputs":{"VOLUME":[1,[4,value ]]})
 
 
 sensing
-//KEYS: space, "up arrow", "down arrow", "right arrow", "left arrow", "any", all others lowercase
+//KEYS: "space", "up arrow", "down arrow", "right arrow", "left arrow", "any", all others lowercase
 
 sensing_touchingobject ("inputs":{"TOUCHINGOBJECTMENU":[1,sensing_touchingobjectmenu]})
 sensing_touchingobjectmenu ("fields":{"TOUCHINGOBJECTMENU":["_mouse_",null]})
